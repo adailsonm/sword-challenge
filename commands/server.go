@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"github.com/adailsonm/sword-challenge/lib"
-	"github.com/adailsonm/sword-challenge/routes"
+	"github.com/adailsonm/desafio-sword/lib"
+	"github.com/adailsonm/desafio-sword/routes"
 	"github.com/spf13/cobra"
 )
 

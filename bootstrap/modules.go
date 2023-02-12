@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"github.com/adailsonm/sword-challenge/commands"
+	"github.com/adailsonm/desafio-sword/commands"
 	"github.com/spf13/cobra"
 )
 
