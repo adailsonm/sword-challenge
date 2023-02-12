@@ -57,7 +57,6 @@ func (u UserController) GetUser(c *gin.Context) {
 	c.JSON(200, gin.H{"data": users})
 }
 
-// SaveUser saves the user
 func (u UserController) SaveUser(c *gin.Context) {
 	user := models.User{}
 	trxHandle := c.MustGet("db_trx").(*gorm.DB)
@@ -81,12 +80,10 @@ func (u UserController) SaveUser(c *gin.Context) {
 	c.JSON(200, gin.H{"data": "user created"})
 }
 
-// UpdateUser updates user
 func (u UserController) UpdateUser(c *gin.Context) {
 	c.JSON(200, gin.H{"data": "user updated"})
 }
 
-// DeleteUser deletes user
 func (u UserController) DeleteUser(c *gin.Context) {
 	paramID := c.Param("id")
 
