@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -60,7 +61,7 @@ func (u UserController) GetUser(c *gin.Context) {
 func (u UserController) SaveUser(c *gin.Context) {
 	user := models.User{}
 	trxHandle := c.MustGet("db_trx").(*gorm.DB)
-
+	fmt.Print(trxHandle)
 	if err := c.ShouldBindJSON(&user); err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -77,11 +78,11 @@ func (u UserController) SaveUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"data": "user created"})
+	c.JSON(201, gin.H{"status": "User created successfully"})
 }
 
 func (u UserController) UpdateUser(c *gin.Context) {
-	c.JSON(200, gin.H{"data": "user updated"})
+	c.JSON(200, gin.H{"status": "User updated successfully"})
 }
 
 func (u UserController) DeleteUser(c *gin.Context) {

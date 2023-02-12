@@ -1,12 +1,14 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
-	ID           string    `json:"id,omitempty"`
-	Name         string    `json:"name,omitempty"`
-	Role         string    `json:"role,omitempty"`
-	Email        string    `json:"email,omitempty"`
-	PasswordHash string    `json:"passwordHash,omitempty"`
-	CreatedAt    time.Time `json:"createdAt,omitempty"`
+	ID        uint      `gorm:"id,omitempty"`
+	Name      string    `json:"name,omitempty"`
+	Role      string    `json:"role,omitempty"`
+	Email     string    `json:"email,omitempty" gorm:"unique,not null"`
+	Password  string    `json:"password,omitempty"`
+	CreatedAt time.Time `json:"createdAt,omitempty"`
 }

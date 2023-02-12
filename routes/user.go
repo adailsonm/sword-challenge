@@ -16,11 +16,11 @@ func (s UserRoutes) Setup() {
 	log.Print("Setting up routes")
 	api := s.handler.Gin.Group("/api")
 	{
-		api.GET("/user", s.userController.GetUser)
-		api.GET("/user/:id", s.userController.GetOneUser)
-		api.POST("/user", s.userController.SaveUser)
-		api.POST("/user/:id", s.userController.UpdateUser)
-		api.DELETE("/user/:id", s.userController.DeleteUser)
+		api.GET("/users", s.userController.GetUser)
+		api.GET("/users/:id", s.userController.GetOneUser)
+		api.POST("/users", s.userController.SaveUser)
+		api.POST("/users/:id", s.userController.UpdateUser)
+		api.DELETE("/users/:id", s.userController.DeleteUser)
 	}
 }
 

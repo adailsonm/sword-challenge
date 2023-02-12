@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/adailsonm/desafio-sword/lib"
+	"github.com/adailsonm/desafio-sword/middlewares"
 	"github.com/adailsonm/desafio-sword/routes"
 	"github.com/spf13/cobra"
 )
@@ -19,10 +20,12 @@ func (s *ServerCommand) Setup(cmd *cobra.Command) {}
 
 func (s *ServerCommand) Run() lib.CommandRunner {
 	return func(
+		middleware middlewares.Middlewares,
 		router lib.RequestHandler,
 		route routes.Routes,
 		database lib.Database,
 	) {
+		middleware.Setup()
 		route.Setup()
 
 		log.Print("Running server")

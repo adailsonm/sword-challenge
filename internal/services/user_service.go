@@ -1,8 +1,11 @@
 package services
 
 import (
+	"log"
+
 	"github.com/adailsonm/desafio-sword/internal/models"
 	"github.com/adailsonm/desafio-sword/internal/repository"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +33,11 @@ func (s UserService) GetAllUser() (users []models.User, err error) {
 }
 
 func (s UserService) CreateUser(user models.User) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
+	if err != nil {
+		log.Println(err)
+	}
+	user.Password = string(hash)
 	return s.repository.Create(&user).Error
 }
 

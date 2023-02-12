@@ -22,7 +22,6 @@ func NewDatabase() Database {
 	dbname := os.Getenv("DB_NAME")
 
 	url := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
-
 	db, err := gorm.Open(mysql.Open(url))
 
 	if err != nil {
