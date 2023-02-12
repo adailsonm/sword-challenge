@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/adailsonm/sword-challenge/commands"
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +19,8 @@ func NewApp() App {
 	cmd := App{
 		Command: rootCmd,
 	}
+	cmd.AddCommand(commands.GetSubCommands(CommonModules)...)
+
 	return cmd
 }
 
