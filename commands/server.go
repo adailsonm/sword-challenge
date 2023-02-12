@@ -1,6 +1,9 @@
 package commands
 
 import (
+	"log"
+	"os"
+
 	"github.com/adailsonm/desafio-sword/lib"
 	"github.com/adailsonm/desafio-sword/routes"
 	"github.com/spf13/cobra"
@@ -16,19 +19,18 @@ func (s *ServerCommand) Setup(cmd *cobra.Command) {}
 
 func (s *ServerCommand) Run() lib.CommandRunner {
 	return func(
-		env lib.Env,
 		router lib.RequestHandler,
 		route routes.Routes,
-		logger lib.Logger,
 		database lib.Database,
 	) {
 		route.Setup()
 
-		logger.Info("Running server")
-		if env.ServerPort == "" {
+		log.Print("Running server")
+		port := os.Getenv("PORT")
+		if port == "" {
 			_ = router.Gin.Run()
 		} else {
-			_ = router.Gin.Run(":" + env.ServerPort)
+			_ = router.Gin.Run(":" + port)
 		}
 	}
 }

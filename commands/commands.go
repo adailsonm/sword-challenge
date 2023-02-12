@@ -2,11 +2,11 @@ package commands
 
 import (
 	"context"
+	"log"
 
 	"github.com/adailsonm/desafio-sword/lib"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
-	"go.uber.org/fx/fxevent"
 )
 
 var cmds = map[string]lib.Command{
@@ -27,11 +27,7 @@ func WrapSubCommand(name string, cmd lib.Command, opt fx.Option) *cobra.Command 
 		Use:   name,
 		Short: cmd.Short(),
 		Run: func(c *cobra.Command, args []string) {
-			logger := lib.GetLogger()
 			opts := fx.Options(
-				fx.WithLogger(func() fxevent.Logger {
-					return logger.GetFxLogger()
-				}),
 				fx.Invoke(cmd.Run()),
 			)
 			ctx := context.Background()
@@ -39,7 +35,7 @@ func WrapSubCommand(name string, cmd lib.Command, opt fx.Option) *cobra.Command 
 			err := app.Start(ctx)
 			defer app.Stop(ctx)
 			if err != nil {
-				logger.Fatal(err)
+				log.Fatal(err)
 			}
 		},
 	}
