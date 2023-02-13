@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -67,7 +66,6 @@ func (u UserController) SaveUser(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(user.Email)
 	userExists, _ := u.service.GetOneByEmail(user.Email)
 	if userExists.Name != "" {
 		c.JSON(http.StatusConflict, gin.H{"status": "User already exists"})
