@@ -49,7 +49,6 @@ func (u UserController) GetOneUser(c *gin.Context) {
 
 }
 
-// GetUser gets the user
 func (u UserController) GetUser(c *gin.Context) {
 	users, err := u.service.GetAllUser()
 	if err != nil {
@@ -61,12 +60,17 @@ func (u UserController) GetUser(c *gin.Context) {
 func (u UserController) SaveUser(c *gin.Context) {
 	user := models.User{}
 	trxHandle := c.MustGet("db_trx").(*gorm.DB)
-	fmt.Print(trxHandle)
 	if err := c.ShouldBindJSON(&user); err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
+	}
+	fmt.Println(user.Email)
+	userExists, _ := u.service.GetOneByEmail(user.Email)
+	if userExists.Name != "" {
+		c.JSON(http.StatusConflict, gin.H{"status": "User already exists"})
 		return
 	}
 
@@ -78,11 +82,11 @@ func (u UserController) SaveUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(201, gin.H{"status": "User created successfully"})
+	c.JSON(http.StatusCreated, gin.H{"status": "User created successfully"})
 }
 
 func (u UserController) UpdateUser(c *gin.Context) {
-	c.JSON(200, gin.H{"status": "User updated successfully"})
+	c.JSON(http.StatusOK, gin.H{"status": "User updated successfully"})
 }
 
 func (u UserController) DeleteUser(c *gin.Context) {
@@ -105,5 +109,5 @@ func (u UserController) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"data": "user deleted"})
+	c.JSON(200, gin.H{"status": "User deleted successfully"})
 }

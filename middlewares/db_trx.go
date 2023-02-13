@@ -48,7 +48,7 @@ func (m DatabaseTrx) Setup() {
 
 		if statusInList(c.Writer.Status(), []int{http.StatusOK, http.StatusCreated, http.StatusNoContent}) {
 			if err := txHandle.Commit().Error; err != nil {
-				log.Fatalf("trx commit error: ", err)
+				log.Fatal("trx commit error: ", err)
 			}
 		} else {
 			txHandle.Rollback()

@@ -32,11 +32,16 @@ func (s UserService) GetAllUser() (users []models.User, err error) {
 	return users, s.repository.Find(&users).Error
 }
 
+func (s UserService) GetOneByEmail(email string) (user models.User, err error) {
+	return user, s.repository.Find(&user, "email = ?", email).Error
+}
+
 func (s UserService) CreateUser(user models.User) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
 	if err != nil {
 		log.Println(err)
 	}
+
 	user.Password = string(hash)
 	return s.repository.Create(&user).Error
 }
