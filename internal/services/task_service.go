@@ -37,8 +37,8 @@ func (s TaskService) CreateTask(task models.Task) error {
 	return s.repository.Create(&task).Error
 }
 
-func (s TaskService) UpdateTask(task models.Task) error {
-	return s.repository.Save(&task).Error
+func (s TaskService) UpdateTask(id uint, task models.Task) error {
+	return s.repository.Where("id = ?", id).Updates(&task).Error
 }
 
 func (s TaskService) DeleteTask(id uint) error {

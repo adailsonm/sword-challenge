@@ -108,6 +108,35 @@ func (t TaskController) SaveTask(c *gin.Context) {
 }
 
 func (t TaskController) UpdateTask(c *gin.Context) {
+	paramID := c.Param("id")
+
+	id, err := strconv.Atoi(paramID)
+
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	task := models.Task{}
+	if err := c.ShouldBindJSON(&task); err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := t.taskService.UpdateTask(uint(id), task); err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"status": "Task updated successfully"})
 }
 
