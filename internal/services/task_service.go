@@ -26,7 +26,11 @@ func (s TaskService) GetOneTask(id uint) (task models.Task, err error) {
 }
 
 func (s TaskService) GetAllTask() (tasks []models.Task, err error) {
-	return tasks, s.repository.Find(&tasks).Error
+	return tasks, s.repository.Preload("User").Find(&tasks).Error
+}
+
+func (s TaskService) GetTaskByUser(id uint) (tasks []models.Task, err error) {
+	return tasks, s.repository.Preload("User", "id = ?", id).Find(&tasks).Error
 }
 
 func (s TaskService) CreateTask(task models.Task) error {

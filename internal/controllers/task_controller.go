@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/adailsonm/desafio-sword/internal/models"
 	"github.com/adailsonm/desafio-sword/internal/services"
@@ -12,12 +14,14 @@ import (
 )
 
 type TaskController struct {
-	service services.TaskService
+	taskService services.TaskService
+	authService services.AuthService
 }
 
-func NewTaskController(taskService services.TaskService) TaskController {
+func NewTaskController(taskService services.TaskService, authService services.AuthService) TaskController {
 	return TaskController{
-		service: taskService,
+		taskService: taskService,
+		authService: authService,
 	}
 }
 
@@ -32,7 +36,7 @@ func (t TaskController) GetOneTask(c *gin.Context) {
 		})
 		return
 	}
-	user, err := t.service.GetOneTask(uint(id))
+	user, err := t.taskService.GetOneTask(uint(id))
 
 	if err != nil {
 		log.Fatal(err)
@@ -49,15 +53,33 @@ func (t TaskController) GetOneTask(c *gin.Context) {
 }
 
 func (t TaskController) GetTask(c *gin.Context) {
-	tasks, err := t.service.GetAllTask()
-	if err != nil {
-		log.Fatal(err)
+	authorizationHeader := c.Request.Header.Get("Authorization")
+	authorizationToken := strings.Split(authorizationHeader, " ")
+
+	claims := t.authService.ExtractClaims(authorizationToken[1])
+	role := fmt.Sprint(claims["role"])
+	userId, _ := strconv.Atoi(fmt.Sprint(claims["userId"]))
+
+	if role != "MANAGER" {
+		tasks, err := t.taskService.GetAllTask()
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.JSON(200, gin.H{"data": tasks})
+	} else {
+		tasks, err := t.taskService.GetTaskByUser(uint(userId))
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.JSON(200, gin.H{"data": tasks})
 	}
-	c.JSON(200, gin.H{"data": tasks})
+
 }
 
 func (t TaskController) SaveTask(c *gin.Context) {
+	authorizationHeader := c.Request.Header.Get("Authorization")
 	task := models.Task{}
+	authorizationToken := strings.Split(authorizationHeader, " ")
 	trxHandle := c.MustGet("db_trx").(*gorm.DB)
 	if err := c.ShouldBindJSON(&task); err != nil {
 		log.Fatal(err)
@@ -67,7 +89,14 @@ func (t TaskController) SaveTask(c *gin.Context) {
 		return
 	}
 
-	if err := t.service.WithTrx(trxHandle).CreateTask(task); err != nil {
+	claims := t.authService.ExtractClaims(authorizationToken[1])
+	userId, err := strconv.Atoi(fmt.Sprint(claims["userId"]))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	task.UserID = uint(userId)
+	if err := t.taskService.WithTrx(trxHandle).CreateTask(task); err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -94,7 +123,7 @@ func (t TaskController) DeleteTask(c *gin.Context) {
 		return
 	}
 
-	if err := t.service.DeleteTask(uint(id)); err != nil {
+	if err := t.taskService.DeleteTask(uint(id)); err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

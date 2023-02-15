@@ -4,6 +4,7 @@ CREATE TABLE tasks (
 	summary		  text(2500)  NOT NULL,
   created_at	timestamp		NOT NULL,
 	updated_at	timestamp		NOT NULL,
+	deleted_at	timestamp,
 	PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users(id)
 );

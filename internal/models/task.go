@@ -1,12 +1,12 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "time"
 
 type Task struct {
-	gorm.Model
-	ID      uint   `gorm:"id,omitempty"`
-	Summary string `json:"summary,omitempty"`
-	UserID  User   `gorm:"foreignKey:id"`
+	ID        int       `gorm:"primary_key" json:"id"`
+	Summary   string    `json:"summary,omitempty"`
+	User      User      `json:"user"`
+	UserID    uint      `json:"-"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }

@@ -45,7 +45,7 @@ func (a AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := a.authService.CreateToken(&user)
+	accessToken, err := a.authService.CreateToken(&user, c)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"error": err.Error(),
